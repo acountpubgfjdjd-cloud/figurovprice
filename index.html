@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGION SHOP | Requiem Style</title>
+    <style>
+        @import url('https://ibb.co/0VR0Z8Gd');
+
+        :root {
+            --primary: #ffffff;
+            --bg-overlay: rgba(0, 0, 0, 0.92);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --text-color: #e0e0e0;
+            --bg-image: url('https://i.ibb.co/L6WvFm1/0VR0Z8Gd.jpg');
+        }
+
+        body, html {
+            margin: 0; padding: 0; background: #000; color: var(--text-color);
+            font-family: 'Lora', serif; transition: 0.5s; min-height: 100vh;
+        }
+
+        .bg-fixed {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), var(--bg-image);
+            background-size: cover; background-position: center; z-index: -3;
+        }
+
+        /* Навигация */
+        .nav-bar {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; box-sizing: border-box; z-index: 1000;
+        }
+        .menu-btn { cursor: pointer; font-size: 1.2rem; background: none; border: none; color: #fff; opacity: 0.6; }
+
+        /* Заголовок в стиле Requiem */
+        .header-area {
+            text-align: center; padding: 100px 20px 40px;
+        }
+        .header-area h1 {
+            font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic;
+            font-size: clamp(2rem, 8vw, 3.5rem); letter-spacing: 2px; margin: 0; color: #fff;
+        }
+
+        /* Основной контейнер прайса */
+        .price-container {
+            max-width: 800px; margin: 0 auto 100px;
+            background: var(--card-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 40px; position: relative;
+        }
+
+        .category { margin-bottom: 40px; }
+        .category h2 {
+            font-family: 'Playfair Display', serif; text-transform: uppercase;
+            font-size: 1.1rem; letter-spacing: 4px; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px; margin-bottom: 20px; color: #fff;
+        }
+
+        .item {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 12px; font-size: 1rem; line-height: 1.6;
+        }
+        .item-name { flex: 1; border-bottom: 1px dotted rgba(255,255,255,0.1); margin-right: 10px; }
+        .item-price { font-weight: 500; color: #fff; white-space: nowrap; }
+
+        .item-desc {
+            font-size: 0.85rem; opacity: 0.6; margin-bottom: 15px; padding-left: 15px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        /* Кнопка ТГ */
+        .order-btn {
+            display: block; width: fit-content; margin: 40px auto 0;
+            padding: 15px 40px; border: 1px solid #fff; color: #fff;
+            text-decoration: none; text-transform: uppercase; letter-spacing: 3px;
+            font-size: 0.8rem; transition: 0.3s;
+        }
+        .order-btn:hover { background: #fff; color: #000; }
+
+        /* Профиль (выезжающий) */
+        #profile-panel {
+            position: fixed; top: 0; right: -350px; width: 320px; height: 100%;
+            background: rgba(10,10,10,0.98); backdrop-filter: blur(20px);
+            z-index: 2000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 50px 30px; border-left: 1px solid var(--border-color);
+        }
+        #profile-panel.open { right: 0; }
+        .close-btn { cursor: pointer; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 30px; }
+        
+        .avatar-box { width: 100px; height: 100px; margin: 0 auto 20px; position: relative; }
+        .avatar-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid #fff; cursor: pointer; }
+        .avatar-box input { display: none; }
+        
+        #display-name { text-align: center; font-family: 'Playfair Display', serif; margin-bottom: 30px; }
+        .input-group label { display: block; font-size: 0.6rem; text-transform: uppercase; opacity: 0.5; margin-bottom: 5px; }
+        .input-group input { width: 100%; background: none; border: 1px solid var(--border-color); padding: 10px; color: #fff; border-radius: 5px; }
+
+        @media (max-width: 600px) {
+            .price-container { margin: 10px; padding: 25px; }
+            .item { flex-direction: column; }
+            .item-name { border-bottom: none; }
+            #profile-panel { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+
+    <nav class="nav-bar">
+        <button class="menu-btn" onclick="toggleProfile()">☰ PROFILE</button>
+    </nav>
+
+    <div id="profile-panel">
+        <div class="close-btn" onclick="toggleProfile()">← CLOSE</div>
+        <div class="avatar-box">
+            <label for="ava-input">
+                <img id="user-ava" src="https://www.w3schools.com/howto/img_avatar.png">
+            </label>
+            <input type="file" id="ava-input" accept="image/*" onchange="uploadAva()">
+        </div>
+        <h2 id="display-name">Anonymous</h2>
+        <div class="input-group">
+            <label>Nickname</label>
+            <input type="text" id="name-input" maxlength="15" oninput="updateName(this.value)">
+        </div>
+    </div>
+
+    <header class="header-area">
+        <h1>реквием price</h1>
+    </header>
+
+    <div class="price-container">
+        
+        <div class="category">
+            <h2>Расследования</h2>
+            <div class="item">
+                <span class="item-name">Информационное досье</span>
+                <span class="item-price">8.99 USDT</span>
+            </div>
+            <div class="item">
+                <span class="item-name">Оперативное досье</span>
+                <span class="item-price">19.99 USDT</span>
+            </div>
+            <div class="item">
+                <span class="item-name">Разведывательное досье</span>
+                <span class="item-price">39.99 USDT</span>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Обучение</h2>
+            <div class="item">
+                <span class="item-name">Полный курс</span>
+                <span class="item-price">59.99 USDT</span>
+            </div>
+            <div class="item-desc">
+                — Персональное наставничество "от А до Я"<br>
+                — Индивидуальная программа под ученика<br>
+                — Помощь в обеспечении анонимности<br>
+                — Предоставление проф. инструментов<br>
+                — Обучение аналитике и визуализации данных
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Софт под заказ</h2>
+            <div class="item">
+                <span class="item-name">Кастомные инструменты</span>
+                <span class="item-price">от 20.99 USDT</span>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Аккаунты Telegram</h2>
+            <div class="item">
+                <span class="item-name">+7 (РФ)</span>
+                <span class="item-price">3.99 USDT</span>
+            </div>
+            <div class="item">
+                <span class="item-name">+380 (Укр)</span>
+                <span class="item-price">4.99 USDT</span>
+            </div>
+            <div class="item">
+                <span class="item-name">+1 (США/Канада)</span>
+                <span class="item-price">7.99 USDT</span>
+            </div>
+        </div>
+
+        <a href="https://t.me/vkfigurov" class="order-btn">Связаться в Telegram</a>
+    </div>
+
+    <script>
+        function toggleProfile() { document.getElementById('profile-panel').classList.toggle('open'); }
+        
+        function uploadAva() {
+            const file = document.getElementById('ava-input').files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                document.getElementById('user-ava').src = reader.result;
+                localStorage.setItem('req-ava', reader.result);
+            }
+            if (file) reader.readAsDataURL(file);
+        }
+
+        function updateName(val) {
+            document.getElementById('display-name').innerText = val || "Anonymous";
+            localStorage.setItem('req-name', val);
+        }
+
+        window.onload = () => {
+            const n = localStorage.getItem('req-name');
+            const a = localStorage.getItem('req-ava');
+            if (n) { document.getElementById('display-name').innerText = n; document.getElementById('name-input').value = n; }
+            if (a) document.getElementById('user-ava').src = a;
+        }
+    </script>
+</body>
+</html>
