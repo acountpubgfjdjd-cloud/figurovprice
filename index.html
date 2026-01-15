@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGION SHOP | REQUIEM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #ffffff;
+            --border-style: 1px solid rgba(255, 255, 255, 0.2);
+            --bg-image: url('https://i.ibb.co/L6WvFm1/0VR0Z8Gd.jpg');
+        }
+
+        body, html {
+            margin: 0; padding: 0; background: var(--bg-color); color: var(--text-color);
+            font-family: 'Lora', serif; transition: 0.5s; min-height: 100vh;
+        }
+
+        /* Фоновое изображение с сильным затемнением */
+        .bg-fixed {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), var(--bg-image);
+            background-size: cover; background-position: center; z-index: -3;
+        }
+
+        /* Навигация */
+        .nav-bar {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; box-sizing: border-box; z-index: 1000;
+        }
+        .menu-btn { cursor: pointer; font-size: 0.8rem; letter-spacing: 3px; background: none; border: none; color: #fff; opacity: 0.5; text-transform: uppercase; }
+
+        /* Центрированный блок прайса */
+        .wrapper {
+            display: flex; justify-content: center; align-items: center;
+            padding: 100px 20px;
+        }
+
+        .price-box {
+            max-width: 700px; width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2px; /* Острые или слегка скругленные углы */
+            padding: 50px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        /* Декоративные уголки как на скрине */
+        .price-box::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05); pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            text-align: center; font-weight: 400;
+            font-size: 2.2rem; letter-spacing: 8px;
+            margin-bottom: 50px; text-transform: lowercase;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem; letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 40px 0 20px 0;
+            border-bottom: var(--border-style);
+            padding-bottom: 8px;
+        }
+
+        .line {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 10px; font-size: 1.05rem;
+        }
+        .line-name { flex: 1; border-bottom: 1px dotted rgba(255,255,255,0.1); margin-right: 10px; }
+        .line-price { font-weight: 400; }
+
+        .details {
+            font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;
+            padding-left: 20px; list-style: none;
+        }
+        .details li { margin-bottom: 5px; position: relative; }
+        .details li::before { content: '—'; position: absolute; left: -20px; }
+
+        .tg-link {
+            display: block; text-align: center; margin-top: 50px;
+            color: #fff; text-decoration: none; font-size: 0.7rem;
+            letter-spacing: 5px; text-transform: uppercase;
+            opacity: 0.5; transition: 0.3s;
+        }
+        .tg-link:hover { opacity: 1; }
+
+        /* Профиль */
+        #profile-panel {
+            position: fixed; top: 0; right: -350px; width: 320px; height: 100%;
+            background: #000; z-index: 2000; transition: 0.5s;
+            padding: 50px 30px; border-left: var(--border-style);
+        }
+        #profile-panel.open { right: 0; }
+        .close-p { cursor: pointer; font-size: 0.6rem; letter-spacing: 2px; opacity: 0.5; margin-bottom: 40px; }
+        .ava-circle { width: 80px; height: 80px; margin: 0 auto 20px; border: 1px solid #fff; border-radius: 50%; overflow: hidden; }
+        .ava-circle img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        .profile-input { width: 100%; background: none; border: 1px solid rgba(255,255,255,0.2); padding: 10px; color: #fff; font-family: inherit; }
+
+        @media (max-width: 600px) {
+            .price-box { padding: 30px 20px; border: none; }
+            h1 { font-size: 1.6rem; letter-spacing: 4px; }
+            .line { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+
+    <nav class="nav-bar">
+        <button class="menu-btn" onclick="toggleProfile()">Terminal</button>
+    </nav>
+
+    <div id="profile-panel">
+        <div class="close-p" onclick="toggleProfile()">[ CLOSE ]</div>
+        <div class="ava-circle">
+            <label for="img-in">
+                <img id="u-ava" src="https://www.w3schools.com/howto/img_avatar.png">
+            </label>
+            <input type="file" id="img-in" hidden onchange="updAva()">
+        </div>
+        <div style="text-align: center; letter-spacing: 2px; margin-bottom: 30px;" id="u-name">GUEST</div>
+        <input type="text" class="profile-input" placeholder="CHANGE NAME" oninput="updName(this.value)">
+    </div>
+
+    <div class="wrapper">
+        <div class="price-box">
+            <h1>реквием price</h1>
+
+            <div class="section-title">Расследования</div>
+            <div class="line"><span class="line-name">Информационное досье</span><span class="line-price">8.99 USDT</span></div>
+            <div class="line"><span class="line-name">Оперативное досье</span><span class="line-price">19.99 USDT</span></div>
+            <div class="line"><span class="line-name">Разведывательное досье</span><span class="line-price">39.99 USDT</span></div>
+
+            <div class="section-title">Обучение</div>
+            <div class="line"><span class="line-name">Полный курс</span><span class="line-price">59.99 USDT</span></div>
+            <ul class="details">
+                <li>Персональное наставничество "от А до Я"</li>
+                <li>Индивидуальная программа под ученика</li>
+                <li>Помощь в анонимности и безопасности</li>
+                <li>Инструменты и аналитика данных</li>
+                <li>Практические кейсы из разведпрактики</li>
+            </ul>
+
+            <div class="section-title">Софт под заказ</div>
+            <div class="line"><span class="line-name">Кастомные инструменты</span><span class="line-price">от 20.99 USDT</span></div>
+
+            <div class="section-title">Аккаунты Telegram</div>
+            <div class="line"><span class="line-name">+7 (РФ)</span><span class="line-price">3.99 USDT</span></div>
+            <div class="line"><span class="line-name">+380 (Укр)</span><span class="line-price">4.99 USDT</span></div>
+            <div class="line"><span class="line-name">+1 (США/Канада)</span><span class="line-price">7.99 USDT</span></div>
+
+            <a href="https://t.me/vkfigurov" class="tg-link">Contact developer</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleProfile() { document.getElementById('profile-panel').classList.toggle('open'); }
+        
+        function updAva() {
+            const file = document.getElementById('img-in').files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                document.getElementById('u-ava').src = reader.result;
+                localStorage.setItem('req-a', reader.result);
+            }
+            if (file) reader.readAsDataURL(file);
+        }
+
+        function updName(v) {
+            document.getElementById('u-name').innerText = v.toUpperCase() || "GUEST";
+            localStorage.setItem('req-n', v);
+        }
+
+        window.onload = () => {
+            const n = localStorage.getItem('req-n');
+            const a = localStorage.getItem('req-a');
+            if (n) { document.getElementById('u-name').innerText = n.toUpperCase(); }
+            if (a) document.getElementById('u-ava').src = a;
+        }
+    </script>
+</body>
+</html>
